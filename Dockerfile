@@ -16,7 +16,7 @@ RUN mkdir $NEXUS_HOME
 RUN tar xvf nexus-3.37.3-02-unix.tar.gz -C $NEXUS_HOME
 
 # Expose a port for the container
-EXPOSE 8080
+EXPOSE 8081
 
 # Set the default working directory to NEXUS_HOME
 WORKDIR $NEXUS_HOME
@@ -25,4 +25,4 @@ WORKDIR $NEXUS_HOME
 VOLUME $NEXUS_HOME/sonatype-work
 
 # Define the command to run when the container starts
-CMD ["nexus-3.37.3-02/bin/nexus", "start"]
+CMD ["./nexus-3.37.3-02/bin/nexus", "start"]

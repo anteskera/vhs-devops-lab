@@ -10,22 +10,27 @@ CONTAINER_NAME="nexus"
 # Define the Nexus home directory
 NEXUS_HOME="/opt/nexus"
 
+PARENT_HOST_DIR="/tn_devops"
 # Define the host directory to mount as the Nexus data directory
 HOST_DIR="/tn_devops/nexus"
 
-if [ -d "/tn_devops" ]; then
-  echo "/tn_devops directory already exists"
+if [ -d "$PARENT_HOST_DIR" ]; then
+  echo "$PARENT_HOST_DIR directory already exists"
 else
-  echo "Creating tn_devops directory "
-  mkdir "/tn_devops"
+  echo "Creating $PARENT_HOST_DIR directory "
+  mkdir "$PARENT_HOST_DIR"
 fi
 
-if [ -d "/tn_devops/nexus" ]; then
-  echo "/tn_devops/nexus directory already exists"
+if [ -d "$HOST_DIR" ]; then
+  echo "$HOST_DIR directory already exists"
 else
-  echo "Creating /tn_devops/nexus directory "
-  mkdir "/tn_devops/nexus"
+  echo "Creating $HOST_DIR directory "
+  mkdir "$HOST_DIR"
 fi
+
+echo "Setting $HOST_DIR directory permissions to write"
+chmod u+w $HOST_DIR
+
 
 # Build the Docker image
 docker build -t "$IMAGE_NAME:$IMAGE_TAG" .
@@ -42,7 +47,7 @@ docker run -d \
   --name "$CONTAINER_NAME" \
   -v "$HOST_DIR:$NEXUS_HOME/sonatype-work" \
   --restart=always \
-  -p 18081:8080 \
+  -p 18081:8081 \
   "$IMAGE_NAME:$IMAGE_TAG"
 
 # Check if the Docker container was started successfully
