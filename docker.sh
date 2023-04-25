@@ -14,22 +14,10 @@ PARENT_HOST_DIR="/tn_devops"
 # Define the host directory to mount as the Nexus data directory
 HOST_DIR="/tn_devops/nexus"
 
-if [ -d "$PARENT_HOST_DIR" ]; then
-  echo "$PARENT_HOST_DIR directory already exists"
-else
-  echo "Creating $PARENT_HOST_DIR directory "
-  mkdir "$PARENT_HOST_DIR"
+if ! [ -d "$HOST_DIR" ]; then
+  echo "$HOST_DIR directory does not exist"
+  exit 1
 fi
-
-if [ -d "$HOST_DIR" ]; then
-  echo "$HOST_DIR directory already exists"
-else
-  echo "Creating $HOST_DIR directory "
-  mkdir "$HOST_DIR"
-fi
-
-echo "Setting $HOST_DIR directory permissions to write"
-chmod u+w $HOST_DIR
 
 
 # Build the Docker image
@@ -45,8 +33,8 @@ fi
 # Start the Docker container with the specified settings
 docker run -d \
   --name "$CONTAINER_NAME" \
-  -v "$HOST_DIR:$NEXUS_HOME/sonatype-work" \
   --restart=always \
+  --mount type=bind,source=$HOST_DIR,target=$NEXUS_HOME/sonatype-work \
   -p 18081:8081 \
   "$IMAGE_NAME:$IMAGE_TAG"
 
