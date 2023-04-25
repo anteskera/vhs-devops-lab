@@ -14,11 +14,21 @@ PARENT_HOST_DIR="/tn_devops"
 # Define the host directory to mount as the Nexus data directory
 HOST_DIR="/tn_devops/nexus"
 
-if ! [ -d "$HOST_DIR" ]; then
-  echo "$HOST_DIR directory does not exist"
-  exit 1
+if [ -d "$PARENT_HOST_DIR" ]; then
+  echo "$PARENT_HOST_DIR directory already exists"
+else
+  echo "Creating $PARENT_HOST_DIR directory"
+  sudo mkdir "$PARENT_HOST_DIR"
 fi
 
+if [ -d "$HOST_DIR" ]; then
+  echo "$HOST_DIR directory already exists"
+else
+  echo "Creating $HOST_DIR directory"
+  sudo mkdir "$HOST_DIR"
+fi
+
+sudo chown $USER:$USER $HOST_DIR
 
 # Build the Docker image
 docker build -t "$IMAGE_NAME:$IMAGE_TAG" .
